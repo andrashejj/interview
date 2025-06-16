@@ -185,7 +185,7 @@ const UserCard = ({ user }: { user: User }) => {
 const LoadingState = () => {
   return (
     <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-      {[...Array(6)].map((_, i) => (
+      {Array.from({ length: 6 }, (_, i) => (
         <div key={i} className="animate-pulse rounded-xl border border-slate-200 bg-white p-6">
           <div className="flex items-start space-x-4">
             <div className="h-16 w-16 rounded-full bg-slate-200"></div>
@@ -234,7 +234,7 @@ const EmptyState = () => {
       </div>
       <h3 className="mt-4 text-lg font-medium text-slate-900">No users found</h3>
       <p className="mt-2 text-sm text-slate-500">
-        Try adjusting your search or filter criteria to find what you're looking for.
+        Try adjusting your search or filter criteria to find what you&apos;re looking for.
       </p>
     </div>
   );

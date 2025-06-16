@@ -38,9 +38,9 @@ export function useAddressBookFilters() {
 
   // Build query parameters
   const queryParams: SearchParams = useMemo(() => ({
-    search: debouncedSearchTerm ?? undefined,
-    gender: (genderFilter as "male" | "female") ?? undefined,
-    sortBy: (sortBy as "firstName" | "lastName" | "age" | "email" | "gender") ?? undefined,
+    search: debouncedSearchTerm || undefined,
+    gender: genderFilter as "male" | "female" | undefined,
+    sortBy: sortBy as "firstName" | "lastName" | "age" | "email" | "gender" | undefined,
     sortOrder: (sortOrder as "asc" | "desc"),
     limit: 30,
   }), [debouncedSearchTerm, genderFilter, sortBy, sortOrder]);

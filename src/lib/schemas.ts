@@ -99,9 +99,9 @@ export type SortField = keyof Pick<User, 'firstName' | 'lastName' | 'age' | 'ema
 export type SortOrder = 'asc' | 'desc';
 
 export const SearchParamsSchema = z.object({
-  search: z.string().optional(),
-  gender: z.enum(['male', 'female']).optional(),
-  sortBy: z.enum(['firstName', 'lastName', 'age', 'email', 'gender']).optional(),
+  search: z.string().optional().transform(val => val === "" ? undefined : val),
+  gender: z.string().optional().transform(val => val === "" ? undefined : val).pipe(z.enum(['male', 'female']).optional()),
+  sortBy: z.string().optional().transform(val => val === "" ? undefined : val).pipe(z.enum(['firstName', 'lastName', 'age', 'email', 'gender']).optional()),
   sortOrder: z.enum(['asc', 'desc']).optional(),
   limit: z.number().min(1).max(100).optional(),
   skip: z.number().min(0).optional(),
