@@ -76,7 +76,7 @@ export function useUsers(params: SearchParams) {
 
   const hasResults = query.data && query.data.users.length > 0;
   const isEmpty = query.data && query.data.users.length === 0;
-  const isFiltered = !!(params.search || params.gender);
+  const isFiltered = !!(params.search ?? params.gender);
 
   return {
     ...query,

@@ -29,7 +29,7 @@ export const usersRouter = createTRPCRouter({
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         
-        const data = await response.json();
+        const data = await response.json() as unknown;
         
         // Validate the response using Zod
         const validatedData = UsersResponseSchema.parse(data);
@@ -99,7 +99,7 @@ export const usersRouter = createTRPCRouter({
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         
-        const data = await response.json();
+        const data = await response.json() as unknown;
         
         // Validate single user response
         const UserSchema = UsersResponseSchema.shape.users.element;
