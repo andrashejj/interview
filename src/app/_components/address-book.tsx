@@ -1,10 +1,12 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import type { User } from "~/lib/schemas";
 import { useAddressBookFilters, useUsers } from "~/lib/hooks";
+import StatsHeader from "./stats-header";
+import UserDetailModal from "./user-detail-modal";
 
-// Search and Filter Controls Component
+// Enhanced Search and Filter Controls Component
 const SearchAndFilters = ({
   searchTerm,
   setSearchTerm,
@@ -29,15 +31,25 @@ const SearchAndFilters = ({
   hasActiveFilters: boolean;
 }) => {
   return (
-    <div className="mb-8 space-y-4 rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+    <div className="mb-8 space-y-4 rounded-2xl border border-white/30 bg-white/80 backdrop-blur-md p-6 shadow-xl">
       <div className="flex items-center justify-between">
-        <h2 className="text-lg font-semibold text-slate-800">Search & Filter</h2>
+        <div className="flex items-center space-x-3">
+          <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg flex items-center justify-center">
+            <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+          </div>
+          <h2 className="text-lg font-semibold text-slate-900">Search & Filter</h2>
+        </div>
         {hasActiveFilters && (
           <button
             onClick={resetFilters}
-            className="text-sm text-blue-600 hover:text-blue-800 font-medium"
+            className="inline-flex items-center px-3 py-1.5 text-sm font-medium text-blue-700 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors duration-200"
           >
-            Clear all filters
+            <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+            Clear filters
           </button>
         )}
       </div>
@@ -114,19 +126,25 @@ const SearchAndFilters = ({
   );
 };
 
-// User Card Component
-const UserCard = ({ user }: { user: User }) => {
+// Enhanced User Card Component
+const UserCard = ({ user, onClick }: { user: User; onClick: () => void }) => {
   return (
-    <div className="overflow-hidden rounded-xl border border-slate-200 bg-white transition-all duration-200 hover:border-slate-300 hover:shadow-lg">
+    <div 
+      className="group overflow-hidden rounded-2xl border border-white/40 bg-white/90 backdrop-blur-sm transition-all duration-300 hover:border-blue-200 hover:shadow-2xl hover:shadow-blue-100/50 hover:-translate-y-1 cursor-pointer"
+      onClick={onClick}
+    >
       <div className="p-6">
         <div className="flex items-start space-x-4">
           {/* Avatar */}
-          <div className="flex-shrink-0">
+          <div className="flex-shrink-0 relative">
             <img
               src={user.image}
               alt={`${user.firstName} ${user.lastName}`}
-              className="h-16 w-16 rounded-full border-2 border-slate-200 object-cover"
+              className="h-16 w-16 rounded-2xl border-3 border-white shadow-lg object-cover group-hover:scale-105 transition-transform duration-300"
             />
+            <div className={`absolute -bottom-1 -right-1 w-5 h-5 rounded-full border-2 border-white shadow-sm ${
+              user.gender === 'male' ? 'bg-blue-500' : 'bg-pink-500'
+            }`} />
           </div>
           
           {/* User Info */}
@@ -181,19 +199,37 @@ const UserCard = ({ user }: { user: User }) => {
   );
 };
 
-// Loading Component
+// Enhanced Loading Component with Shimmer Effect
 const LoadingState = () => {
   return (
     <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
       {Array.from({ length: 6 }, (_, i) => (
-        <div key={i} className="animate-pulse rounded-xl border border-slate-200 bg-white p-6">
+        <div key={i} className="rounded-2xl border border-white/40 bg-white/90 backdrop-blur-sm p-6 shadow-xl overflow-hidden">
           <div className="flex items-start space-x-4">
-            <div className="h-16 w-16 rounded-full bg-slate-200"></div>
-            <div className="flex-1 space-y-2">
-              <div className="h-4 bg-slate-200 rounded w-3/4"></div>
-              <div className="h-3 bg-slate-200 rounded w-1/2"></div>
-              <div className="h-3 bg-slate-200 rounded w-full"></div>
-              <div className="h-3 bg-slate-200 rounded w-2/3"></div>
+            <div className="relative h-16 w-16 rounded-2xl bg-gradient-to-r from-slate-200 via-slate-300 to-slate-200 animate-pulse overflow-hidden">
+              <div className="absolute inset-0 -translate-x-full animate-[shimmer_2s_infinite] bg-gradient-to-r from-transparent via-white/60 to-transparent"></div>
+            </div>
+            <div className="flex-1 space-y-3">
+              <div className="h-5 bg-gradient-to-r from-slate-200 via-slate-300 to-slate-200 rounded-lg animate-pulse relative overflow-hidden w-3/4">
+                <div className="absolute inset-0 -translate-x-full animate-[shimmer_2s_infinite] bg-gradient-to-r from-transparent via-white/60 to-transparent"></div>
+              </div>
+              <div className="h-3 bg-gradient-to-r from-slate-200 via-slate-300 to-slate-200 rounded animate-pulse relative overflow-hidden w-1/2">
+                <div className="absolute inset-0 -translate-x-full animate-[shimmer_2s_infinite] bg-gradient-to-r from-transparent via-white/60 to-transparent"></div>
+              </div>
+              <div className="h-3 bg-gradient-to-r from-slate-200 via-slate-300 to-slate-200 rounded animate-pulse relative overflow-hidden w-full">
+                <div className="absolute inset-0 -translate-x-full animate-[shimmer_2s_infinite] bg-gradient-to-r from-transparent via-white/60 to-transparent"></div>
+              </div>
+              <div className="h-3 bg-gradient-to-r from-slate-200 via-slate-300 to-slate-200 rounded animate-pulse relative overflow-hidden w-2/3">
+                <div className="absolute inset-0 -translate-x-full animate-[shimmer_2s_infinite] bg-gradient-to-r from-transparent via-white/60 to-transparent"></div>
+              </div>
+              <div className="flex justify-between pt-2">
+                <div className="h-3 bg-gradient-to-r from-slate-200 via-slate-300 to-slate-200 rounded animate-pulse relative overflow-hidden w-16">
+                  <div className="absolute inset-0 -translate-x-full animate-[shimmer_2s_infinite] bg-gradient-to-r from-transparent via-white/60 to-transparent"></div>
+                </div>
+                <div className="h-3 bg-gradient-to-r from-slate-200 via-slate-300 to-slate-200 rounded animate-pulse relative overflow-hidden w-20">
+                  <div className="absolute inset-0 -translate-x-full animate-[shimmer_2s_infinite] bg-gradient-to-r from-transparent via-white/60 to-transparent"></div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -242,6 +278,9 @@ const EmptyState = () => {
 
 // Main Address Book Component
 export default function AddressBook() {
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   const {
     searchTerm,
     genderFilter,
@@ -258,60 +297,98 @@ export default function AddressBook() {
 
   const { data, isLoading, error, refetch, hasResults, isEmpty, isFiltered } = useUsers(queryParams);
 
+  const handleUserClick = (user: User) => {
+    setSelectedUser(user);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedUser(null);
+  };
+
+  // Calculate stats for the stats header
+  const totalUsers = data?.originalTotal ?? 0;
+  const filteredUsers = data?.users.length ?? 0;
+  const maleCount = data?.users.filter(user => user.gender === 'male').length ?? 0;
+  const femaleCount = data?.users.filter(user => user.gender === 'female').length ?? 0;
+
   return (
-    <div className="mx-auto max-w-7xl px-4">
-      <div className="mb-8 text-center">
-        <h1 className="text-3xl font-bold text-slate-900">Address Book</h1>
-        <p className="mt-2 text-slate-600">Search and browse through our user directory</p>
-      </div>
-
-      <SearchAndFilters
-        searchTerm={searchTerm}
-        setSearchTerm={setSearchTerm}
-        genderFilter={genderFilter}
-        setGenderFilter={setGenderFilter}
-        sortBy={sortBy}
-        setSortBy={setSortBy}
-        sortOrder={sortOrder}
-        setSortOrder={setSortOrder}
-        resetFilters={resetFilters}
-        hasActiveFilters={hasActiveFilters}
-      />
-
-      {/* Results Summary */}
-      {!isLoading && !error && data && (
-        <div className="mb-6 flex items-center justify-between">
-          <div className="text-sm text-slate-600">
-            Showing {data.users.length} of {data.originalTotal} users
-            {(searchTerm || genderFilter) && " (filtered)"}
-          </div>
-          {hasActiveFilters && (
-            <div className="text-xs text-blue-600 bg-blue-50 px-2 py-1 rounded-full">
-              Filters active
-            </div>
-          )}
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/30">
+      <div className="mx-auto max-w-7xl px-4 py-8">
+        <div className="mb-8 text-center">
+          <h1 className="text-4xl font-bold bg-gradient-to-r from-slate-900 via-blue-900 to-purple-900 bg-clip-text text-transparent">
+            Address Book
+          </h1>
+          <p className="mt-3 text-lg text-slate-600">Search and browse through our user directory</p>
         </div>
-      )}
 
-      {/* Content */}
-      {isLoading && <LoadingState />}
-      
-      {error && (
-        <ErrorState 
-          error={error.message} 
-          onRetry={() => refetch()} 
+        {/* Stats Header */}
+        {!isLoading && !error && data && (
+          <StatsHeader
+            totalUsers={totalUsers}
+            filteredUsers={filteredUsers}
+            isFiltered={hasActiveFilters}
+            maleCount={maleCount}
+            femaleCount={femaleCount}
+          />
+        )}
+
+        <SearchAndFilters
+          searchTerm={searchTerm}
+          setSearchTerm={setSearchTerm}
+          genderFilter={genderFilter}
+          setGenderFilter={setGenderFilter}
+          sortBy={sortBy}
+          setSortBy={setSortBy}
+          sortOrder={sortOrder}
+          setSortOrder={setSortOrder}
+          resetFilters={resetFilters}
+          hasActiveFilters={hasActiveFilters}
         />
-      )}
-      
-      {!isLoading && !error && data && data.users.length === 0 && <EmptyState />}
-      
-      {!isLoading && !error && data && data.users.length > 0 && (
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {data.users.map((user) => (
-            <UserCard key={user.id} user={user} />
-          ))}
-        </div>
-      )}
+
+        {/* Results Summary */}
+        {!isLoading && !error && data && (
+          <div className="mb-6 flex items-center justify-between">
+            <div className="text-sm text-slate-600">
+              Showing {data.users.length} of {data.originalTotal} users
+              {(searchTerm || genderFilter) && " (filtered)"}
+            </div>
+            {hasActiveFilters && (
+              <div className="text-xs text-blue-600 bg-blue-50 px-2 py-1 rounded-full">
+                Filters active
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Content */}
+        {isLoading && <LoadingState />}
+        
+        {error && (
+          <ErrorState 
+            error={error.message} 
+            onRetry={() => refetch()} 
+          />
+        )}
+        
+        {!isLoading && !error && data && data.users.length === 0 && <EmptyState />}
+        
+        {!isLoading && !error && data && data.users.length > 0 && (
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {data.users.map((user) => (
+              <UserCard key={user.id} user={user} onClick={() => handleUserClick(user)} />
+            ))}
+          </div>
+        )}
+
+        {/* User Detail Modal */}
+        <UserDetailModal
+          user={selectedUser}
+          isOpen={isModalOpen}
+          onClose={handleCloseModal}
+        />
+      </div>
     </div>
   );
 } 
