@@ -30,6 +30,7 @@ export default function Home() {
     );
 
   return (
+    <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c] text-black">
     <div
       style={{
         padding: 32,
@@ -38,10 +39,10 @@ export default function Home() {
         margin: "0 auto",
       }}
     >
-      <h1 style={{ marginBottom: 24 }}>Address Book</h1>
+      <h1 style={{ marginBottom: 24, color: 'white' }}>Address Book</h1>
 
       <div
-        style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 24 }}
+        style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 24, color: 'white' }}
       >
         <input
           value={search}
@@ -120,6 +121,7 @@ export default function Home() {
         </table>
       )}
     </div>
+    </main>
 
   );
 }
