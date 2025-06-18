@@ -10,6 +10,79 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
+model User {
+    id           Int      @id @default(autoincrement())
+    firstName    String
+    lastName     String
+    maidenName   String?
+    age          Int
+    gender       String   // "male" or "female"
+    email        String   @unique
+    phone        String
+    username     String   @unique
+    password     String
+    birthDate    String
+    image        String
+    bloodGroup   String
+    height       Float
+    weight       Float
+    eyeColor     String
+    hairColor    String
+    hairType     String
+    ip           String
+    macAddress   String
+    university   String
+    ein          String
+    ssn          String
+    userAgent    String
+    role         String
+    
+    // Address fields (flattened for SQLite optimization)
+    addressLine     String
+    city           String
+    state          String
+    stateCode      String
+    postalCode     String
+    country        String
+    latitude       Float
+    longitude      Float
+    
+    // Company fields
+    companyName       String
+    companyDepartment String
+    companyTitle      String
+    companyAddress    String
+    companyCity       String
+    companyState      String
+    companyPostal     String
+    companyCountry    String
+    
+    // Bank fields
+    bankCardExpire String
+    bankCardNumber String
+    bankCardType   String
+    bankCurrency   String
+    bankIban       String
+    
+    // Crypto fields
+    cryptoCoin    String
+    cryptoWallet  String
+    cryptoNetwork String
+    
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    
+    // Optimized indexes for common queries
+    @@index([email])
+    @@index([username])
+    @@index([firstName, lastName])
+    @@index([gender])
+    @@index([age])
+    @@index([city, state])
+    @@index([companyName])
+    @@index([createdAt])
+}
+
 model Post {
     id        Int      @id @default(autoincrement())
     name      String

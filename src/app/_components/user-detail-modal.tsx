@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import Image from "next/image";
 import type { User } from "~/lib/schemas";
 
 interface UserDetailModalProps {
@@ -29,9 +30,11 @@ export default function UserDetailModal({ user, isOpen, onClose }: UserDetailMod
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-4">
                   <div className="relative">
-                    <img
+                    <Image
                       src={user.image}
                       alt={`${user.firstName} ${user.lastName}`}
+                      width={80}
+                      height={80}
                       className="w-20 h-20 rounded-2xl border-4 border-white shadow-lg object-cover"
                     />
                     <div className={`absolute -bottom-1 -right-1 w-6 h-6 rounded-full border-2 border-white ${

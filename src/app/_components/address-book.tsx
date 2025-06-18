@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import Image from "next/image";
 import type { User } from "~/lib/schemas";
 import { useAddressBookFilters, useUsers } from "~/lib/hooks";
 import StatsHeader from "./stats-header";
@@ -137,9 +138,11 @@ const UserCard = ({ user, onClick }: { user: User; onClick: () => void }) => {
         <div className="flex items-start space-x-4">
           {/* Avatar */}
           <div className="flex-shrink-0 relative">
-            <img
+            <Image
               src={user.image}
               alt={`${user.firstName} ${user.lastName}`}
+              width={64}
+              height={64}
               className="h-16 w-16 rounded-2xl border-3 border-white shadow-lg object-cover group-hover:scale-105 transition-transform duration-300"
             />
             <div className={`absolute -bottom-1 -right-1 w-5 h-5 rounded-full border-2 border-white shadow-sm ${
@@ -295,7 +298,7 @@ export default function AddressBook() {
     hasActiveFilters,
   } = useAddressBookFilters();
 
-  const { data, isLoading, error, refetch, hasResults, isEmpty, isFiltered } = useUsers(queryParams);
+  const { data, isLoading, error, refetch } = useUsers(queryParams);
 
   const handleUserClick = (user: User) => {
     setSelectedUser(user);
