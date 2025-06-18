@@ -3,6 +3,7 @@
 import React from "react";
 import Image from "next/image";
 import type { User } from "~/lib/schemas";
+import { formatDate } from "~/lib/utils";
 
 interface UserDetailModalProps {
   user: User | null;
@@ -85,7 +86,7 @@ export default function UserDetailModal({ user, isOpen, onClose }: UserDetailMod
                     </div>
                     <div className="flex items-center text-sm">
                       <span className="w-20 text-slate-500">Birth:</span>
-                      <span className="text-slate-900">{new Date(user.birthDate).toLocaleDateString()}</span>
+                      <span className="text-slate-900">{formatDate(user.birthDate)}</span>
                     </div>
                     <div className="flex items-center text-sm">
                       <span className="w-20 text-slate-500">Blood:</span>
