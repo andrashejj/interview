@@ -7,7 +7,6 @@ import { useAddressBookFilters, useUsers } from "~/lib/hooks";
 import StatsHeader from "./stats-header";
 import UserDetailModal from "./user-detail-modal";
 
-// Enhanced Search and Filter Controls Component
 const SearchAndFilters = ({
   searchTerm,
   setSearchTerm,
@@ -127,7 +126,6 @@ const SearchAndFilters = ({
   );
 };
 
-// Enhanced User Card Component
 const UserCard = ({ user, onClick }: { user: User; onClick: () => void }) => {
   return (
     <div 
@@ -202,7 +200,6 @@ const UserCard = ({ user, onClick }: { user: User; onClick: () => void }) => {
   );
 };
 
-// Enhanced Loading Component with Shimmer Effect
 const LoadingState = () => {
   return (
     <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -310,7 +307,6 @@ export default function AddressBook() {
     setSelectedUser(null);
   };
 
-  // Calculate stats for the stats header
   const totalUsers = data?.originalTotal ?? 0;
   const filteredUsers = data?.users.length ?? 0;
   const maleCount = data?.users.filter(user => user.gender === 'male').length ?? 0;

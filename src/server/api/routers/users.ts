@@ -9,10 +9,8 @@ export const usersRouter = createTRPCRouter({
     .input(SearchParamsSchema)
     .query(async ({ input }) => {
       try {
-        // Build the database query with filters
         const where: Prisma.UserWhereInput = {};
         
-        // Apply search filter (name or email) - SQLite doesn't support case-insensitive contains
         if (input.search) {
           const searchTerm = input.search;
           where.OR = [
@@ -22,18 +20,15 @@ export const usersRouter = createTRPCRouter({
           ];
         }
 
-        // Apply gender filter
         if (input.gender) {
           where.gender = input.gender;
         }
 
-        // Build the orderBy clause for sorting
         let orderBy: Prisma.UserOrderByWithRelationInput = { createdAt: 'desc' };
         if (input.sortBy && input.sortOrder) {
           const sortField = input.sortBy;
           const sortOrder = input.sortOrder;
           
-          // Map sort fields to database fields
           const sortFieldMap: Record<string, keyof Prisma.UserOrderByWithRelationInput> = {
             firstName: 'firstName',
             lastName: 'lastName',
@@ -48,11 +43,9 @@ export const usersRouter = createTRPCRouter({
           }
         }
 
-        // Set pagination parameters
-        const limit = Math.min(input.limit ?? 30, 100); // Max 100 items
+        const limit = Math.min(input.limit ?? 30, 100);
         const skip = input.skip ?? 0;
 
-        // Execute the queries
         const [users, totalCount] = await Promise.all([
           db.user.findMany({
             where,
@@ -63,10 +56,8 @@ export const usersRouter = createTRPCRouter({
           db.user.count({ where }),
         ]);
 
-        // Transform database users to API format
         const transformedUsers: User[] = users.map(transformDatabaseUserToApiUser);
 
-        // Get original total count without filters for compatibility
         const originalTotal = await db.user.count();
 
         return {
@@ -95,13 +86,12 @@ export const usersRouter = createTRPCRouter({
           throw new Error(`User with ID ${input.id} not found`);
         }
 
-        // Transform database user to API format
         return transformDatabaseUserToApiUser(user);
       } catch (error) {
         console.error("Error fetching user from database:", error);
         
         if (error instanceof Error && error.message.includes('not found')) {
-          throw error; // Re-throw user not found errors
+          throw error;
         }
         
         throw new Error("Failed to fetch user from database");
@@ -121,7 +111,6 @@ export const usersRouter = createTRPCRouter({
     }))
     .mutation(async ({ input }) => {
       try {
-        // Check if user with email or username already exists
         const existingUser = await db.user.findFirst({
           where: {
             OR: [
@@ -135,7 +124,6 @@ export const usersRouter = createTRPCRouter({
           throw new Error("User with this email or username already exists");
         }
 
-        // Create a new user with minimal required fields
         const newUser = await db.user.create({
           data: {
             firstName: input.firstName,
@@ -145,9 +133,8 @@ export const usersRouter = createTRPCRouter({
             username: input.username,
             gender: input.gender,
             age: input.age,
-            // Set default values for required fields
             maidenName: null,
-            password: "defaultpassword", // In production, this should be properly hashed
+            password: "defaultpassword",
             birthDate: new Date().toISOString(),
             image: `https://ui-avatars.com/api/?name=${input.firstName}+${input.lastName}&background=random`,
             bloodGroup: "O+",
@@ -195,7 +182,7 @@ export const usersRouter = createTRPCRouter({
         console.error("Error creating user:", error);
         
         if (error instanceof Error && error.message.includes('already exists')) {
-          throw error; // Re-throw duplicate user errors
+          throw error;
         }
         
         throw new Error("Failed to create user");
@@ -215,7 +202,6 @@ export const usersRouter = createTRPCRouter({
       try {
         const { id, ...updateData } = input;
 
-        // Check if user exists
         const existingUser = await db.user.findUnique({
           where: { id },
         });
@@ -224,7 +210,6 @@ export const usersRouter = createTRPCRouter({
           throw new Error(`User with ID ${id} not found`);
         }
 
-        // Check for email/username conflicts if updating them
         if (updateData.email) {
           const emailConflict = await db.user.findFirst({
             where: {
@@ -238,7 +223,7 @@ export const usersRouter = createTRPCRouter({
           }
         }
 
-        // Update the user
+        // Update the user    
         const updatedUser = await db.user.update({
           where: { id },
           data: updateData,
@@ -252,7 +237,7 @@ export const usersRouter = createTRPCRouter({
           error.message.includes('not found') || 
           error.message.includes('already in use')
         )) {
-          throw error; // Re-throw specific errors
+          throw error; 
         }
         
         throw new Error("Failed to update user");
@@ -263,7 +248,6 @@ export const usersRouter = createTRPCRouter({
     .input(z.object({ id: z.number() }))
     .mutation(async ({ input }) => {
       try {
-        // Check if user exists
         const existingUser = await db.user.findUnique({
           where: { id: input.id },
         });
@@ -272,7 +256,6 @@ export const usersRouter = createTRPCRouter({
           throw new Error(`User with ID ${input.id} not found`);
         }
 
-        // Delete the user
         await db.user.delete({
           where: { id: input.id },
         });
@@ -282,14 +265,13 @@ export const usersRouter = createTRPCRouter({
         console.error("Error deleting user:", error);
         
         if (error instanceof Error && error.message.includes('not found')) {
-          throw error; // Re-throw user not found errors
+          throw error;
         }
         
         throw new Error("Failed to delete user");
       }
     }),
 
-  // Statistics endpoint for dashboard
   getStats: publicProcedure
     .query(async () => {
       try {
@@ -300,7 +282,7 @@ export const usersRouter = createTRPCRouter({
           db.user.count({
             where: {
               createdAt: {
-                gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000), // Last 30 days
+                gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
               },
             },
           }),
