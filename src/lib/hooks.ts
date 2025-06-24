@@ -8,6 +8,8 @@ export function useAddressBookFilters() {
   const [genderFilter, setGenderFilter] = useState("");
   const [sortBy, setSortBy] = useState("");
   const [sortOrder, setSortOrder] = useState("asc");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(12); // Show 12 users per page
 
   // Debounced search to reduce API calls
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
@@ -25,7 +27,20 @@ export function useAddressBookFilters() {
   const handleSearchChange = useCallback((term: string) => {
     setSearchTerm(term);
     debouncedSetSearch(term);
+    setCurrentPage(1); // Reset to first page when searching
   }, [debouncedSetSearch]);
+
+  // Handle filter changes and reset page
+  const handleGenderFilterChange = useCallback((gender: string) => {
+    setGenderFilter(gender);
+    setCurrentPage(1);
+  }, []);
+
+  const handleSortChange = useCallback((field: string, order: string) => {
+    setSortBy(field);
+    setSortOrder(order);
+    setCurrentPage(1);
+  }, []);
 
   // Reset all filters
   const resetFilters = useCallback(() => {
@@ -34,6 +49,7 @@ export function useAddressBookFilters() {
     setGenderFilter("");
     setSortBy("");
     setSortOrder("asc");
+    setCurrentPage(1);
   }, []);
 
   // Build query parameters
@@ -42,8 +58,9 @@ export function useAddressBookFilters() {
     gender: genderFilter as "male" | "female" | undefined,
     sortBy: sortBy as "firstName" | "lastName" | "age" | "email" | "gender" | undefined,
     sortOrder: (sortOrder as "asc" | "desc"),
-    limit: 100, // Show all users
-  }), [debouncedSearchTerm, genderFilter, sortBy, sortOrder]);
+    limit: itemsPerPage,
+    skip: (currentPage - 1) * itemsPerPage,
+  }), [debouncedSearchTerm, genderFilter, sortBy, sortOrder, currentPage, itemsPerPage]);
 
   return {
     // State
@@ -51,12 +68,15 @@ export function useAddressBookFilters() {
     genderFilter,
     sortBy,
     sortOrder,
+    currentPage,
+    itemsPerPage,
     
     // Actions
     setSearchTerm: handleSearchChange,
-    setGenderFilter,
-    setSortBy,
-    setSortOrder,
+    setGenderFilter: handleGenderFilterChange,
+    setSortBy: (field: string) => handleSortChange(field, sortOrder),
+    setSortOrder: (order: string) => handleSortChange(sortBy, order),
+    setCurrentPage,
     resetFilters,
     
     // Computed

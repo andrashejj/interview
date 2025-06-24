@@ -5,6 +5,7 @@ import Image from "next/image";
 import type { User } from "~/lib/schemas";
 import { useAddressBookFilters, useUsers } from "~/lib/hooks";
 import StatsHeader from "./stats-header";
+import Pagination from "./pagination";
 
 
 const SearchAndFilters = ({
@@ -282,10 +283,13 @@ export default function AddressBook() {
     genderFilter,
     sortBy,
     sortOrder,
+    currentPage,
+    itemsPerPage,
     setSearchTerm,
     setGenderFilter,
     setSortBy,
     setSortOrder,
+    setCurrentPage,
     resetFilters,
     queryParams,
     hasActiveFilters,
@@ -295,8 +299,12 @@ export default function AddressBook() {
 
   const totalUsers = data?.originalTotal ?? 0;
   const filteredUsers = data?.users.length ?? 0;
+  const totalFilteredUsers = data?.total ?? 0; // Total matching filter criteria
   const maleCount = data?.users.filter(user => user.gender === 'male').length ?? 0;
   const femaleCount = data?.users.filter(user => user.gender === 'female').length ?? 0;
+  
+  // Calculate pagination
+  const totalPages = Math.ceil(totalFilteredUsers / itemsPerPage);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/30">
@@ -336,7 +344,7 @@ export default function AddressBook() {
         {!isLoading && !error && data && (
           <div className="mb-6 flex items-center justify-between">
             <div className="text-sm text-slate-600">
-              Showing {data.users.length} of {data.originalTotal} users
+              Page {currentPage} of {totalPages} 
               {(searchTerm || genderFilter) && " (filtered)"}
             </div>
             {hasActiveFilters && (
@@ -360,11 +368,26 @@ export default function AddressBook() {
         {!isLoading && !error && data && data.users.length === 0 && <EmptyState />}
         
         {!isLoading && !error && data && data.users.length > 0 && (
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {data.users.map((user) => (
-              <UserCard key={user.id} user={user} />
-            ))}
-          </div>
+          <>
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+              {data.users.map((user) => (
+                <UserCard key={user.id} user={user} />
+              ))}
+            </div>
+
+            {/* Pagination */}
+            {totalPages > 1 && (
+              <div className="mt-8">
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  onPageChange={setCurrentPage}
+                  totalItems={totalFilteredUsers}
+                  itemsPerPage={itemsPerPage}
+                />
+              </div>
+            )}
+          </>
         )}
       </div>
     </div>
