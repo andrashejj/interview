@@ -1,11 +1,11 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import Image from "next/image";
 import type { User } from "~/lib/schemas";
 import { useAddressBookFilters, useUsers } from "~/lib/hooks";
 import StatsHeader from "./stats-header";
-import UserDetailModal from "./user-detail-modal";
+
 
 const SearchAndFilters = ({
   searchTerm,
@@ -126,11 +126,10 @@ const SearchAndFilters = ({
   );
 };
 
-const UserCard = ({ user, onClick }: { user: User; onClick: () => void }) => {
+const UserCard = ({ user }: { user: User }) => {
   return (
     <div 
-      className="group overflow-hidden rounded-2xl border border-white/40 bg-white/90 backdrop-blur-sm transition-all duration-300 hover:border-blue-200 hover:shadow-2xl hover:shadow-blue-100/50 hover:-translate-y-1 cursor-pointer"
-      onClick={onClick}
+      className="group overflow-hidden rounded-2xl border border-white/40 bg-white/90 backdrop-blur-sm transition-all duration-300 hover:border-blue-200 hover:shadow-2xl hover:shadow-blue-100/50 hover:-translate-y-1"
     >
       <div className="p-6">
         <div className="flex items-start space-x-4">
@@ -278,9 +277,6 @@ const EmptyState = () => {
 
 // Main Address Book Component
 export default function AddressBook() {
-  const [selectedUser, setSelectedUser] = useState<User | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
   const {
     searchTerm,
     genderFilter,
@@ -296,16 +292,6 @@ export default function AddressBook() {
   } = useAddressBookFilters();
 
   const { data, isLoading, error, refetch } = useUsers(queryParams);
-
-  const handleUserClick = (user: User) => {
-    setSelectedUser(user);
-    setIsModalOpen(true);
-  };
-
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-    setSelectedUser(null);
-  };
 
   const totalUsers = data?.originalTotal ?? 0;
   const filteredUsers = data?.users.length ?? 0;
@@ -376,17 +362,10 @@ export default function AddressBook() {
         {!isLoading && !error && data && data.users.length > 0 && (
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
             {data.users.map((user) => (
-              <UserCard key={user.id} user={user} onClick={() => handleUserClick(user)} />
+              <UserCard key={user.id} user={user} />
             ))}
           </div>
         )}
-
-        {/* User Detail Modal */}
-        <UserDetailModal
-          user={selectedUser}
-          isOpen={isModalOpen}
-          onClose={handleCloseModal}
-        />
       </div>
     </div>
   );

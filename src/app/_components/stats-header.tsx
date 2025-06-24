@@ -23,7 +23,7 @@ export default function StatsHeader({
         <div className="flex items-center justify-between mb-6">
           <div>
             <h2 className="text-2xl font-bold text-slate-900 mb-2">
-              Directory Overview
+              User Statistics
             </h2>
             <p className="text-slate-600">
               {isFiltered ? 'Filtered results' : 'All users'} from our professional network
