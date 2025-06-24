@@ -1,6 +1,7 @@
 import { LatestPost } from "~/app/_components/post";
 import { api, HydrateClient } from "~/trpc/server";
 import Challenge from "./_components/challenge";
+import UserList from "~/app/_components/userList";
 
 export default async function Home() {
   const hello = await api.post.hello({ text: "from tRPC" });
@@ -15,7 +16,6 @@ export default async function Home() {
             Andras Full stack{" "}
             <span className="text-[hsl(280,100%,70%)]">Interview</span> App
           </h1>
-
           <Challenge />
 
           <div className="flex flex-col items-center gap-2">
@@ -29,6 +29,7 @@ export default async function Home() {
               Debug: {hello ? hello.greeting : "Loading tRPC query..."}
             </p>
           </div>
+          <UserList />
           <LatestPost />
         </div>
       </main>
