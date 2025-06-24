@@ -18,3 +18,23 @@ model Post {
 
     @@index([name])
 }
+
+model User {
+    id         Int    @id
+    firstName  String
+    lastName   String
+    maidenName String?
+    age        Int
+    gender     String
+    email      String  @unique
+    phone      String
+    username   String
+    image      String
+    address    String
+    city       String
+    state      String
+
+    @@index([firstName, lastName])
+    @@index([age])
+    @@index([gender])
+}
