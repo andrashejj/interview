@@ -1,4 +1,3 @@
-import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import { SearchParamsSchema, transformDatabaseUserToApiUser, type User } from "~/lib/schemas";
 import { db } from "~/server/db";

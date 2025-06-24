@@ -42,7 +42,7 @@ export function useAddressBookFilters() {
     gender: genderFilter as "male" | "female" | undefined,
     sortBy: sortBy as "firstName" | "lastName" | "age" | "email" | "gender" | undefined,
     sortOrder: (sortOrder as "asc" | "desc"),
-    limit: 30,
+    limit: 100, // Show all users
   }), [debouncedSearchTerm, genderFilter, sortBy, sortOrder]);
 
   return {
