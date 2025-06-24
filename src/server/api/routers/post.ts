@@ -20,7 +20,7 @@ export const postRouter = createTRPCRouter({
             name: input.name,
           },
         });
-      } catch (e) {
+      } catch {
         return null;
       }
     }),
@@ -31,7 +31,7 @@ export const postRouter = createTRPCRouter({
         orderBy: { createdAt: "desc" },
       });
       return post ?? null;
-    } catch (e) {
+    } catch {
       return null;
     }
   }),

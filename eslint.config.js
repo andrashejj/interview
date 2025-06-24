@@ -9,6 +9,7 @@ export default tseslint.config(
   {
     ignores: [".next"],
   },
+  // @ts-expect-error - Compatibility shim for Next.js ESLint config
   ...compat.extends("next/core-web-vitals"),
   {
     files: ["**/*.ts", "**/*.tsx"],
