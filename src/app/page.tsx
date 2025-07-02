@@ -1,6 +1,7 @@
 import { LatestPost } from "~/app/_components/post";
 import { api, HydrateClient } from "~/trpc/server";
 import Challenge from "./_components/challenge";
+import AddressBook from "./_components/address-book";
 
 export default async function Home() {
   const hello = await api.post.hello({ text: "from tRPC" });
@@ -17,6 +18,9 @@ export default async function Home() {
           </h1>
 
           <Challenge />
+          <div className="w-full max-w-7xl bg-white rounded-2xl shadow-2xl p-8">
+            <AddressBook />
+          </div>
 
           <div className="flex flex-col items-center gap-2">
             <div className="mb-2 rounded border border-white/20 bg-white/10 px-4 py-2 text-sm text-slate-200 italic">
