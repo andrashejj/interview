@@ -1,37 +1,80 @@
-import { LatestPost } from "~/app/_components/post";
-import { api, HydrateClient } from "~/trpc/server";
-import Challenge from "./_components/challenge";
+'use client';
 
-export default async function Home() {
-  const hello = await api.post.hello({ text: "from tRPC" });
+import { useEffect, useState } from 'react';
+import UserTable from './components/UserTable';
+import SearchBar from './components/SearchBar';
+import { User } from '@prisma/client';
 
-  void api.post.getLatest.prefetch();
+export default function HomePage() {
+  const [users, setUsers] = useState<User[]>([]);
+  const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
+  const [search, setSearch] = useState('');
+  const [gender, setGender] = useState('');
+  const [sortBy, setSortBy] = useState('');
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const response = await fetch('/api/users');
+        const data = await response.json();
+        setUsers(data);
+        setFilteredUsers(data);
+      } catch (error) {
+        console.error('Failed to fetch users:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUsers();
+  }, []);
+
+  useEffect(() => {
+    let result = [...users];
+
+    if (search.trim()) {
+      const query = search.toLowerCase();
+      result = result.filter((user) => {
+        const fullName = `${user.firstName} ${user.lastName}`.toLowerCase();
+        return fullName.includes(query) || user.email.toLowerCase().includes(query);
+      });
+    }
+
+    if (gender) {
+      result = result.filter((user) => user.gender === gender);
+    }
+
+    if (sortBy === 'name') {
+      result.sort((a, b) =>
+        `${a.firstName} ${a.lastName}`.localeCompare(`${b.firstName} ${b.lastName}`)
+      );
+    } else if (sortBy === 'age') {
+      result.sort((a, b) => a.age - b.age);
+    }
+
+    setFilteredUsers(result);
+  }, [search, gender, sortBy, users]);
 
   return (
-    <HydrateClient>
-      <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c] text-white">
-        <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16">
-          <h1 className="text-5xl font-extrabold tracking-tight sm:text-[5rem]">
-            Andras Full stack{" "}
-            <span className="text-[hsl(280,100%,70%)]">Interview</span> App
-          </h1>
+    <main className="p-6">
+      <h1 className="text-2xl font-bold mb-4">📒 Address Book</h1>
 
-          <Challenge />
-
-          <div className="flex flex-col items-center gap-2">
-            <div className="mb-2 rounded border border-white/20 bg-white/10 px-4 py-2 text-sm text-slate-200 italic">
-              <span className="font-semibold">Note:</span> The following section
-              is just boilerplate/sample code to demonstrate API usage and
-              component rendering. You can remove or replace it as you build
-              your solution.
-            </div>
-            <p className="text-2xl text-white">
-              Debug: {hello ? hello.greeting : "Loading tRPC query..."}
-            </p>
-          </div>
-          <LatestPost />
-        </div>
-      </main>
-    </HydrateClient>
+      {loading ? (
+        <p className="text-gray-600">🔄 Loading users...</p>
+      ) : (
+        <>
+          <SearchBar
+            search={search}
+            setSearch={setSearch}
+            gender={gender}
+            setGender={setGender}
+            sortBy={sortBy}
+            setSortBy={setSortBy}
+          />
+          <UserTable users={filteredUsers} />
+        </>
+      )}
+    </main>
   );
 }

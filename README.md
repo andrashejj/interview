@@ -1,93 +1,133 @@
-# Interview Challenge: Address Book App
+# 📒 Address Book
 
-This is a [T3 Stack](https://create.t3.gg/) project built for an interview challenge, featuring an Address Book application that fetches and displays user data with interactive filtering, sorting, and search capabilities.
+A modern, type-safe address book built using **Next.js**, **Prisma**, **SQLite**, and **Tailwind CSS**. This app fetches user data from [https://dummyjson.com/users](https://dummyjson.com/users), seeds the database on first run (or every hour), and provides interactive filtering, sorting, and search functionality.
 
-🚀 **Live Demo**: [https://interview-eight-rosy.vercel.app/](https://interview-eight-rosy.vercel.app/)
+## 🚀 Features
 
-## Challenge Overview
+* ✅ Fetches and persists user data from DummyJSON API using Prisma + SQLite
+* ✅ Fully responsive, accessible UI built with Tailwind CSS
+* ✅ Powerful filters: search by name/email, filter by gender, and sort by name or age
+* ✅ Data seeded and cached for one hour to reduce API load
+* ✅ Type-safe validation with Zod
+* ✅ Clean project structure with separation of concerns
+* ✅ Pagination support (client-side or server-side ready)
+* ✅ Uses `next/font` for optimized custom fonts (Geist)
 
-The goal is to create an Address Book app that:
+---
 
-- Fetches user data from [https://dummyjson.com/users](https://dummyjson.com/users)
-- Displays users in a clean, structured layout
-- Enables interactive filtering, sorting, and search functionality
-- Emphasizes type safety, clean architecture, and maintainability
+## 🛠 Tech Stack
 
-### Tech Stack Used
+* [Next.js 14+ (App Router)](https://nextjs.org/)
+* [Prisma ORM](https://www.prisma.io/)
+* [SQLite](https://www.sqlite.org/)
+* [Zod](https://github.com/colinhacks/zod)
+* [Tailwind CSS](https://tailwindcss.com/)
+* [TypeScript](https://www.typescriptlang.org/)
 
-- **React** - UI framework
-- **Next.js** - Full-stack React framework
-- **TypeScript** - Type safety throughout
-- **tRPC** - End-to-end typesafe APIs
-- **Prisma** - Database ORM
-- **SQLite** - Database
-- **Tailwind CSS** - Styling
-- **Zod** - Runtime type validation
+---
 
-## Features Implemented
+## 📦 Getting Started
+Here’s the updated **Getting Started** section with improved clarity and integration of the `.env` step:
 
-- ✅ Fetches and validates user data from external API
-- ✅ Clean, responsive card-based layout
-- ✅ Search functionality (name and email)
-- ✅ Filtering by gender and other user properties
-- ✅ Sorting by name, age, and other fields
-- ✅ Loading and error state handling
-- ✅ Type-safe data validation with Zod
-- ✅ Clean component architecture
-- ✅ Responsive design
+---
 
-## Getting Started
+## 📦 Getting Started
 
-1. Clone the repository:
+### 1. Clone the repository
 
 ```bash
-git clone https://github.com/andrashejj/interview
-cd interview
+git clone https://github.com/rajmendra/address-book.git
+cd address-book
 ```
 
-2. Install dependencies:
+### 2. Install dependencies
 
 ```bash
-pnpm install
+npm install
+# or use yarn or pnpm
 ```
 
-3. Set up the database:
+### 3. Set up environment variables
+
+Create a `.env` file in the root directory with the following content:
+
+```env
+NEXT_PUBLIC_DUMMY_USERS_API=https://dummyjson.com/users
+```
+
+> 💡 You can also run `cp .env.example .env` if an example file is provided.
+
+### 4. Set up the database
 
 ```bash
-pnpm db:push
+npx prisma generate
+npx prisma migrate dev --name init
 ```
 
-4. Start the development server:
+This will create your SQLite database and apply the initial migration.
+
+### 5. Start the development server
 
 ```bash
-pnpm dev
+npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) to view the application.
+Now open [http://localhost:3000](http://localhost:3000) in your browser to view the app.
 
-## Project Structure
 
-```text
+---
+
+## 📂 Project Structure
+
+```
 src/
-├── app/
-│   ├── _components/
-│   │   ├── challenge.tsx      # Challenge description component
-│   │   └── address-book/      # Address book components
-│   └── page.tsx               # Main page
-├── server/
-│   └── api/                   # tRPC API routes
-└── trpc/                      # tRPC configuration
+├── app/               # Next.js App Router structure
+│   ├── api/           # API Routes (e.g., /api/users)
+│   └── page.tsx       # Main UI logic with filters and table
+├── components/        # UI Components (SearchBar, UserTable, etc.)
+├── lib/               # Utility functions (e.g., fetchDummyUsers, Prisma client)
+├── prisma/            # Prisma schema and migrations
+├── styles/            # Tailwind global styles
 ```
 
-## Learn More
+---
 
-To learn more about the [T3 Stack](https://create.t3.gg/), take a look at the following resources:
+## ✨ Advanced Functionality
 
-- [Documentation](https://create.t3.gg/)
-- [Learn the T3 Stack](https://create.t3.gg/en/faq#what-learning-resources-are-currently-available) — Check out these awesome tutorials
+* 🕐 **Data Re-seeding**: App fetches new user data if more than one hour has passed since last seed.
+* ✅ **Filtering & Sorting**: Built-in support to refine user list by various criteria.
+* 📤 **Scalable**: Easily extendable to support more features (e.g. pagination, authentication).
 
-You can check out the [create-t3-app GitHub repository](https://github.com/t3-oss/create-t3-app) — your feedback and contributions are welcome!
+---
 
-## Deployment
+## 🧪 Testing & Quality
 
-This application is deployed on [Vercel](https://vercel.com/). For more deployment options, see the [T3 deployment guides](https://create.t3.gg/en/deployment/vercel).
+* Type-safe API validation using **Zod**
+* Custom Prisma types via generated client
+* Designed with separation of concerns and modularity
+
+---
+
+## 🌐 Deployment
+
+You can deploy this app instantly to [Vercel](https://vercel.com/) by clicking the button below:
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new)
+
+For other deployment options, refer to the [Next.js deployment docs](https://nextjs.org/docs/app/building-your-application/deploying).
+
+---
+
+## 🧠 Learn More
+
+* [Next.js Docs](https://nextjs.org/docs)
+* [Prisma Docs](https://www.prisma.io/docs/)
+* [Zod Docs](https://zod.dev/)
+* [Tailwind Docs](https://tailwindcss.com/docs)
+
+---
+
+## 📌 Credits
+
+Built by **Rajmendra** using modern web technologies. Inspired by real-world frontend interview tasks.
+
