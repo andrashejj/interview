@@ -10,11 +10,85 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
-model Post {
-    id        Int      @id @default(autoincrement())
-    name      String
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+model User {
+    id             Int      @id
+    firstName      String
+    lastName       String
+    maidenName     String?
+    age            Int?
+    gender         String?
+    email          String   @unique
+    phone          String?
+    username       String   @unique
+    password       String?
+    birthDate      String?
+    image          String?
+    bloodGroup     String?
+    height         Float?
+    weight         Float?
+    eyeColor       String?
+    hairColor      String?
+    hairType       String?
+    ip             String?
+    macAddress     String?
+    university     String?
+    ein            String?
+    ssn            String?
+    userAgent      String?
+    role           String?
+    
+    // Address fields
+    address        String?
+    city           String?
+    state          String?
+    stateCode      String?
+    postalCode     String?
+    addressLat     Float?
+    addressLng     Float?
+    country        String?
+    
+    // Company fields
+    companyName       String?
+    companyTitle      String?
+    companyDepartment String?
+    companyAddress    String?
+    companyCity       String?
+    companyState      String?
+    companyStateCode  String?
+    companyPostalCode String?
+    companyLat        Float?
+    companyLng        Float?
+    companyCountry    String?
+    
+    // Bank and Crypto stored as JSON strings
+    bankJson          String? // JSON string
+    cryptoJson        String? // JSON string
+    
+    todos          Todo[]
+    createdAt      DateTime @default(now())
+    updatedAt      DateTime @updatedAt
+    
+    // Indices for filtering
+    @@index([gender])
+    @@index([hairColor])
+    @@index([eyeColor])
+    @@index([bloodGroup])
+    
+    // Indices for searching
+    @@index([firstName])
+    @@index([lastName])
+    @@index([phone])
+    @@index([companyName])
+}
 
-    @@index([name])
+model Todo {
+    id          Int      @id
+    todo        String
+    completed   Boolean  @default(false)
+    userId      Int
+    user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+    createdAt   DateTime @default(now())
+    updatedAt   DateTime @updatedAt
+
+    @@index([userId])
 }
